@@ -1,0 +1,56 @@
+pipeline {
+    agent{
+        label {label 'Master'}
+    }
+
+    stages {
+        stage('Clone code base') {
+            steps {
+                echo 'Clone from git hub'
+                git 'https://github.com/st0ban/maven-project.git'
+            }
+        }
+        stage('Compile') {
+            steps {
+                echo 'Compiling'
+                withMaven(maven: 'localMaven')
+                {
+                    sh "mvn compile"
+                }
+            }
+        }
+        stage('Testing') {
+            steps {
+                echo 'Testing'
+                 withMaven(maven: 'localMaven')
+                {
+                    sh "mvn test"
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'build'
+                 withMaven(maven: 'localMaven')
+                {
+                    sh "mvn -B -DskipTests clean package"
+                }
+            }
+        }
+        stage('Sonar Analysis') {
+            steps {
+                echo 'Sonar Analysis'
+                withSonarQubeEnv(installationName: 'localSonar', credentialsId:'cred4sonar')
+                {
+                    sh "mvn -B -DskipTests clean package sonar:sonar"
+                }
+            }
+        }
+        stage('Deploying') {
+            steps {
+                echo 'deploying'
+                
+            }
+        }
+    }
+}
