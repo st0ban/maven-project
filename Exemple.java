@@ -13,7 +13,7 @@ public class Exemple {
   public static void main (String[] args) {
    //toDo 
 
-    system.out.println("Hello World") ;
+    system.out.println("Hello World!") ;
     try {
     }catch(Exception e) {
     }
